@@ -3,6 +3,7 @@ package com.fuckingcheese;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +14,9 @@ public class YamlReader {
     ArrayList<Map<String,String>> sister = new ArrayList<>();
     private ArrayList<String> docData = new ArrayList<>();
 
-    public void readYaml()
+    public void readYaml(File file)
     {
-        String s = getStringFile("data.yaml");
+        String s = getStringFile(file.getAbsolutePath());
         Yaml yaml = new Yaml();
         Map<String, ArrayList<Map<String,String>>> myMap = yaml.load(s);
         sister = myMap.get("params");

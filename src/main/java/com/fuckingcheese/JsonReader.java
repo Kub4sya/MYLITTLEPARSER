@@ -3,6 +3,7 @@ package com.fuckingcheese;
 import com.google.gson.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -10,9 +11,9 @@ import java.util.ArrayList;
 public class JsonReader implements JsonDeserializer<ReactorType> {
     private ArrayList<ReactorType> r = new ArrayList<>();
 
-    public void readJson() {
+    public void readJson(File file) {
         Gson g = new GsonBuilder().registerTypeAdapter(ReactorType.class, new JsonReader()).create();
-        String date = getStringFile("data.json");
+        String date = getStringFile(file.getAbsolutePath());
         g.fromJson(date, ReactorType.class);
     }
     @Override

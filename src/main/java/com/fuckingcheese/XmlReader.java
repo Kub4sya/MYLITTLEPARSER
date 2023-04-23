@@ -16,12 +16,12 @@ public class XmlReader extends DefaultHandler{
     private ArrayList<String> docData = new ArrayList<>();
     String thisElement;
 
-    public void readXml(){
+    public void readXml(File file){
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
             XmlReader saxp = new XmlReader();
-            parser.parse(new File("data.xml"), saxp);
+            parser.parse(file, saxp);
 
         } catch (SAXException e) {
             throw new RuntimeException(e);
