@@ -1,25 +1,51 @@
 package com.fuckingcheese;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-public class JsonReader implements JsonDeserializer<ReactorType> {
+public class JsonReader implements JsonDeserializer<ArrayList<ReactorType>> {
     private ArrayList<ReactorType> r = new ArrayList<>();
 
+    public DefaultMutableTreeNode fillReactors()
+        {
+            DefaultMutableTreeNode units = new DefaultMutableTreeNode("чуваки");
+            //System.out.println(r);
+            for(ReactorType rx : r)
+            {
+                DefaultMutableTreeNode unit = new DefaultMutableTreeNode(rx.getName());
+                unit.add(new DefaultMutableTreeNode("Burnup is "+rx.getKpd()));
+                unit.add(new DefaultMutableTreeNode("KPD is "+rx.getKpd()));
+                unit.add(new DefaultMutableTreeNode("Enrichment is "+rx.getEnrichment()));
+                unit.add(new DefaultMutableTreeNode("Termal_capacity is "+rx.getTermal_capacity()));
+                unit.add(new DefaultMutableTreeNode("Electrical_capacity is "+rx.getElectrical_capacity()));
+                unit.add(new DefaultMutableTreeNode("Life_time is "+rx.getLife_time()));
+                unit.add(new DefaultMutableTreeNode("First_load is "+rx.getFirst_load()));
+                //unit.add("burnup is "+rx.);
+                units.add(unit);
+            }
+            return units;
+        }
+    
     public void readJson(File file) {
-        Gson g = new GsonBuilder().registerTypeAdapter(ReactorType.class, new JsonReader()).create();
+        Type type = new TypeToken<ArrayList<ReactorType>>(){}.getType();
+        Gson g = new GsonBuilder().registerTypeAdapter(type, new JsonReader()).create();
         String date = getStringFile(file.getAbsolutePath());
-        g.fromJson(date, ReactorType.class);
+        r = g.fromJson(date, type);
+        System.out.println(r);
     }
     @Override
-    public ReactorType deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public ArrayList<ReactorType> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         JsonArray jack = jsonObject.getAsJsonArray("params");
+        ArrayList<ReactorType> rocket = new ArrayList<>();
         ReactorType rc = null;
         for(JsonElement jo : jack) {
             JsonObject js = jo.getAsJsonObject();
@@ -32,10 +58,12 @@ public class JsonReader implements JsonDeserializer<ReactorType> {
                 }
             }
             rc = new ReactorType(s, Double.parseDouble(String.valueOf(js.getAsJsonPrimitive("burnup"))), Double.parseDouble(String.valueOf(js.getAsJsonPrimitive("kpd"))), Double.parseDouble(String.valueOf(js.getAsJsonPrimitive("enrichment"))), Integer.parseInt(String.valueOf(js.getAsJsonPrimitive("termal_capacity"))), Double.parseDouble(String.valueOf(js.getAsJsonPrimitive("electrical_capacity"))), Integer.parseInt(String.valueOf(js.getAsJsonPrimitive("life_time"))), Double.parseDouble(String.valueOf(js.getAsJsonPrimitive("first_load"))));
-            r.add(rc);
+            rc.setFrom("json");
+            rocket.add(rc);
         }
-        System.out.println(r);
-        return rc;
+        //System.out.println(rocket);
+        //fillReactors(rocket);
+        return rocket;
     }
 
 

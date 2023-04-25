@@ -6,6 +6,9 @@ package com.fuckingcheese;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -13,6 +16,10 @@ import javax.swing.JFileChooser;
  */
 public class JFrameSun extends javax.swing.JFrame {
 
+    private File f;
+    private JsonReader json = new JsonReader();
+    private XmlReader xml = new XmlReader();
+    private YamlReader yaml = new YamlReader();
     /**
      * Creates new form JFrameSun
      */
@@ -31,6 +38,8 @@ public class JFrameSun extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        PuzoKirilla2 = new javax.swing.JTree();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,15 +56,20 @@ public class JFrameSun extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane1.setViewportView(PuzoKirilla2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1))
+                    .addComponent(jScrollPane1))
                 .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
@@ -65,7 +79,9 @@ public class JFrameSun extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -75,11 +91,12 @@ public class JFrameSun extends javax.swing.JFrame {
         // TODO add your handling code here:
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
-        File f = chooser.getSelectedFile();
+        f = chooser.getSelectedFile();
         String filename = f.getAbsolutePath();
         System.out.println(filename);
         jTextField1.setText(filename);
         dispenceFiles(getFileType(filename));
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
         public String getFileType(String fileName)
@@ -94,20 +111,27 @@ public class JFrameSun extends javax.swing.JFrame {
     
     public void dispenceFiles(String type)
     {
-        JsonReader json = new JsonReader();
-        XmlReader xml = new XmlReader();
-        YamlReader yaml = new YamlReader();
+        System.out.println(f.getAbsolutePath());
         if(type.equals("json") || type.equals("xml") || type.equals("yaml"))
         {
         if(type.equals("json"))
-            json.readJson();
+        {
+            json.readJson(f);
+            PuzoKirilla2.setModel(new DefaultTreeModel(json.fillReactors()));
+        }
         if(type.equals("xml"))
-            xml.readXml();
+        {
+            xml.readXml(f);
+            PuzoKirilla2.setModel(new DefaultTreeModel(xml.fillReactors())); 
+        }
         if(type.equals("yaml"))
-            yaml.readYaml();
+        {
+            yaml.readYaml(f);
+            PuzoKirilla2.setModel(new DefaultTreeModel(yaml.fillReactors())); 
+        }
         }
         else
-            System.out.println("idk what it is");
+            System.out.println("idk what it is");  
     }
     
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -150,7 +174,9 @@ public class JFrameSun extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTree PuzoKirilla2;
     private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

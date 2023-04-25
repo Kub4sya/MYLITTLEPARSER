@@ -25,6 +25,44 @@ public class ReactorType {
         this.first_load = first_load;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public double getBurnup() {
+        return burnup;
+    }
+
+    public double getKpd() {
+        return kpd;
+    }
+
+    public double getEnrichment() {
+        return enrichment;
+    }
+
+    public int getTermal_capacity() {
+        return termal_capacity;
+    }
+
+    public double getElectrical_capacity() {
+        return electrical_capacity;
+    }
+
+    public int getLife_time() {
+        return life_time;
+    }
+
+    public double getFirst_load() {
+        return first_load;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+    
+    
+
     public void setFrom(String from) {
         this.from = from;
     }
@@ -40,6 +78,7 @@ public class ReactorType {
                 ", electrical_capacity=" + electrical_capacity +
                 ", life_time=" + life_time +
                 ", first_load=" + first_load +
+                ", from=" + from +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class YamlReader {
     private ArrayList<ReactorType> r = new ArrayList<>();
@@ -43,6 +44,10 @@ public class YamlReader {
         {
             r.add(new ReactorType(docData.get(i),Double.parseDouble(docData.get(i+1)),Double.parseDouble(docData.get(i+2)),Double.parseDouble(docData.get(i+3)),Integer.parseInt(docData.get(i+4)),Double.parseDouble(docData.get(i+5)),Integer.parseInt(docData.get(i+6)),Double.parseDouble(docData.get(i+7))));
         }
+        for(ReactorType rc : r)
+        {
+            rc.setFrom("yaml");
+        }
         System.out.println(r);
     }
 
@@ -65,4 +70,25 @@ public class YamlReader {
             return null;
         }
     }
+    
+    public DefaultMutableTreeNode fillReactors()
+        {
+            DefaultMutableTreeNode units = new DefaultMutableTreeNode("чуваки");
+            //System.out.println(r);
+            for(ReactorType rx : r)
+            {
+                DefaultMutableTreeNode unit = new DefaultMutableTreeNode(rx.getName());
+                unit.add(new DefaultMutableTreeNode("Burnup is "+rx.getKpd()));
+                unit.add(new DefaultMutableTreeNode("KPD is "+rx.getKpd()));
+                unit.add(new DefaultMutableTreeNode("Enrichment is "+rx.getEnrichment()));
+                unit.add(new DefaultMutableTreeNode("Termal_capacity is "+rx.getTermal_capacity()));
+                unit.add(new DefaultMutableTreeNode("Electrical_capacity is "+rx.getElectrical_capacity()));
+                unit.add(new DefaultMutableTreeNode("Life_time is "+rx.getLife_time()));
+                unit.add(new DefaultMutableTreeNode("First_load is "+rx.getFirst_load()));
+                //unit.add("burnup is "+rx.);
+                units.add(unit);
+            }
+            return units;
+        }
+    
 }
