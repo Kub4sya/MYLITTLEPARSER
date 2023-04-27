@@ -6,24 +6,30 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import javax.swing.tree.DefaultMutableTreeNode;
 
-public class YamlReader {
+public class YamlReader implements Reader{
     private ArrayList<ReactorType> r = new ArrayList<>();
     ArrayList<Map<String,String>> sister = new ArrayList<>();
     private ArrayList<String> docData = new ArrayList<>();
+    private Reader reader;
 
-    public void readYaml(File file)
-    {
-        String s = getStringFile(file.getAbsolutePath());
-        Yaml yaml = new Yaml();
-        Map<String, ArrayList<Map<String,String>>> myMap = yaml.load(s);
-        sister = myMap.get("params");
-        //System.out.println(String.valueOf(sister.get(0).get("burnup")));
-        divideMap();
-    }
+//    public void readYaml(File file)
+//    {
+//        if(getFileType(file.getAbsolutePath()).equals("yaml"))
+//        {
+//        String s = getStringFile(file.getAbsolutePath());
+//        Yaml yaml = new Yaml();
+//        Map<String, ArrayList<Map<String,String>>> myMap = yaml.load(s);
+//        sister = myMap.get("params");
+//        //System.out.println(String.valueOf(sister.get(0).get("burnup")));
+//        divideMap();
+//        }
+//        else
+//        {
+//            //нет нифига
+//        }
+//    }
     public void divideMap()
     {
         for(Map<String, String> mute : sister)
@@ -37,6 +43,10 @@ public class YamlReader {
        // System.out.println(docData);
     }
 
+
+
+
+    
     public void setAtrb()
     {
         //System.out.println(docData);
@@ -71,24 +81,63 @@ public class YamlReader {
         }
     }
     
-    public DefaultMutableTreeNode fillReactors()
+//    public DefaultMutableTreeNode fillReactors()
+//        {
+//            DefaultMutableTreeNode units = new DefaultMutableTreeNode("чуваки");
+//            //System.out.println(r);
+//            for(ReactorType rx : r)
+//            {
+//                DefaultMutableTreeNode unit = new DefaultMutableTreeNode(rx.getName());
+//                unit.add(new DefaultMutableTreeNode("Burnup is "+rx.getKpd()));
+//                unit.add(new DefaultMutableTreeNode("KPD is "+rx.getKpd()));
+//                unit.add(new DefaultMutableTreeNode("Enrichment is "+rx.getEnrichment()));
+//                unit.add(new DefaultMutableTreeNode("Termal_capacity is "+rx.getTermal_capacity()));
+//                unit.add(new DefaultMutableTreeNode("Electrical_capacity is "+rx.getElectrical_capacity()));
+//                unit.add(new DefaultMutableTreeNode("Life_time is "+rx.getLife_time()));
+//                unit.add(new DefaultMutableTreeNode("First_load is "+rx.getFirst_load()));
+//                unit.add(new DefaultMutableTreeNode("From "+rx.getFrom()));
+//                //unit.add("burnup is "+rx.);
+//                units.add(unit);
+//            }
+//            return units;
+//        }
+
+    @Override
+    public void read(File file) {
+        if(getFileType(file.getAbsolutePath()).equals("yaml"))
         {
-            DefaultMutableTreeNode units = new DefaultMutableTreeNode("чуваки");
-            //System.out.println(r);
-            for(ReactorType rx : r)
-            {
-                DefaultMutableTreeNode unit = new DefaultMutableTreeNode(rx.getName());
-                unit.add(new DefaultMutableTreeNode("Burnup is "+rx.getKpd()));
-                unit.add(new DefaultMutableTreeNode("KPD is "+rx.getKpd()));
-                unit.add(new DefaultMutableTreeNode("Enrichment is "+rx.getEnrichment()));
-                unit.add(new DefaultMutableTreeNode("Termal_capacity is "+rx.getTermal_capacity()));
-                unit.add(new DefaultMutableTreeNode("Electrical_capacity is "+rx.getElectrical_capacity()));
-                unit.add(new DefaultMutableTreeNode("Life_time is "+rx.getLife_time()));
-                unit.add(new DefaultMutableTreeNode("First_load is "+rx.getFirst_load()));
-                //unit.add("burnup is "+rx.);
-                units.add(unit);
-            }
-            return units;
+        String s = getStringFile(file.getAbsolutePath());
+        Yaml yaml = new Yaml();
+        Map<String, ArrayList<Map<String,String>>> myMap = yaml.load(s);
+        sister = myMap.get("params");
+        //System.out.println(String.valueOf(sister.get(0).get("burnup")));
+        divideMap();
         }
+        else
+        {
+           reader.read(file);
+           r = reader.getR();
+        }   
+    }
+
+    @Override
+    public String getFileType(String fileName) {
+        String extension = "";
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            extension = fileName.substring(i+1);
+        }
+        return extension;
+    }
+
+    @Override
+    public ArrayList<ReactorType> getR() {
+        return r;
+    }
+
+    @Override
+    public void setNeibour(Reader reader) {
+        this.reader = reader;
+    }
     
 }

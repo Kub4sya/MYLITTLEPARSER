@@ -17,7 +17,7 @@ import javax.swing.tree.DefaultTreeModel;
 public class JFrameSun extends javax.swing.JFrame {
 
     private File f;
-    private JsonReader json = new JsonReader();
+    private JsonReaderOrigin json = new JsonReaderOrigin();
     private XmlReader xml = new XmlReader();
     private YamlReader yaml = new YamlReader();
     /**
@@ -95,43 +95,48 @@ public class JFrameSun extends javax.swing.JFrame {
         String filename = f.getAbsolutePath();
         System.out.println(filename);
         jTextField1.setText(filename);
-        dispenceFiles(getFileType(filename));
+        dispenceFiles();
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
-        public String getFileType(String fileName)
-    {
-        String extension = "";
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = fileName.substring(i+1);
-        }
-        return extension;
-    }
+//    public String getFileType(String fileName)
+//    {
+//        String extension = "";
+//        int i = fileName.lastIndexOf('.');
+//        if (i > 0) {
+//            extension = fileName.substring(i+1);
+//        }
+//        return extension;
+//    }
     
-    public void dispenceFiles(String type)
+    public void dispenceFiles()
     {
         System.out.println(f.getAbsolutePath());
-        if(type.equals("json") || type.equals("xml") || type.equals("yaml"))
-        {
-        if(type.equals("json"))
-        {
-            json.readJson(f);
-            PuzoKirilla2.setModel(new DefaultTreeModel(json.fillReactors()));
-        }
-        if(type.equals("xml"))
-        {
-            xml.readXml(f);
-            PuzoKirilla2.setModel(new DefaultTreeModel(xml.fillReactors())); 
-        }
-        if(type.equals("yaml"))
-        {
-            yaml.readYaml(f);
-            PuzoKirilla2.setModel(new DefaultTreeModel(yaml.fillReactors())); 
-        }
-        }
-        else
-            System.out.println("idk what it is");  
+//        if(type.equals("json") || type.equals("xml") || type.equals("yaml"))
+//        {
+//        if(type.equals("json"))
+//        {
+//            json.readJson(f);
+//            //PuzoKirilla2.setModel(new DefaultTreeModel(json.fillReactors()));
+//        }
+//        if(type.equals("xml"))
+//        {
+//            xml.readXml(f);
+//            //PuzoKirilla2.setModel(new DefaultTreeModel(xml.fillReactors())); 
+//        }
+//        if(type.equals("yaml"))
+//        {
+//            yaml.readYaml(f);
+//            //PuzoKirilla2.setModel(new DefaultTreeModel(yaml.fillReactors())); 
+//        }
+//        }
+//        else
+//            System.out.println("idk what it is");  
+        
+        ElementStorage el = new ElementStorage();
+        el.goFile(f);
+        PuzoKirilla2.setModel(new DefaultTreeModel(el.fillReactors()));
+        
     }
     
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
