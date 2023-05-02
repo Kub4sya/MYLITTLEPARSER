@@ -43,7 +43,7 @@ public class JsonReader implements Reader, JsonDeserializer<ArrayList<ReactorTyp
         if(getFileType(file.getAbsolutePath()).equals("json"))
         {
         Type type = new TypeToken<ArrayList<ReactorType>>(){}.getType();
-        Gson g = new GsonBuilder().registerTypeAdapter(type, new JsonReaderOrigin()).create();
+        Gson g = new GsonBuilder().registerTypeAdapter(type, new JsonReader()).create();
         String date = getStringFile(file.getAbsolutePath());
         r = g.fromJson(date, type);
         System.out.println(r);
@@ -53,7 +53,7 @@ public class JsonReader implements Reader, JsonDeserializer<ArrayList<ReactorTyp
 //           xml.readXml(file);
           reader.read(file);
           r = reader.getR();
-           System.out.println(r);
+          System.out.println(r);
        }
     }
 
