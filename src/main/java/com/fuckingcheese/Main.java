@@ -1,6 +1,7 @@
 package com.fuckingcheese;
 
 import java.io.File;
+import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,5 +13,7 @@ public class Main {
 //       // xml.readXml(f);
 //        yaml.readYaml(f);
 //        //suck dick
+        ElementStorage el = new ElementStorage();
+        el.goSQL();
     }
 }

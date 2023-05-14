@@ -17,7 +17,6 @@ import javax.swing.tree.DefaultTreeModel;
 public class JFrameSun extends javax.swing.JFrame {
 
     private File f;
-    private JsonReaderOrigin json = new JsonReaderOrigin();
     private XmlReader xml = new XmlReader();
     private YamlReader yaml = new YamlReader();
     /**
@@ -136,7 +135,7 @@ public class JFrameSun extends javax.swing.JFrame {
         ElementStorage el = new ElementStorage();
         el.goFile(f);
         PuzoKirilla2.setModel(new DefaultTreeModel(el.fillReactors()));
-        
+        el.goSQL();
     }
     
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed

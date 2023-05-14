@@ -2,6 +2,8 @@ package com.fuckingcheese;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class ReactorType {
     @SerializedName("class")
     private String name;
@@ -23,6 +25,19 @@ public class ReactorType {
         this.electrical_capacity = electrical_capacity;
         this.life_time = life_time;
         this.first_load = first_load;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReactorType that = (ReactorType) o;
+        return Double.compare(that.burnup, burnup) == 0 && Double.compare(that.kpd, kpd) == 0 && Double.compare(that.enrichment, enrichment) == 0 && termal_capacity == that.termal_capacity && Double.compare(that.electrical_capacity, electrical_capacity) == 0 && life_time == that.life_time && Double.compare(that.first_load, first_load) == 0 && Objects.equals(name, that.name) && Objects.equals(from, that.from);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, burnup, kpd, enrichment, termal_capacity, electrical_capacity, life_time, first_load, from);
     }
 
     public String getName() {
