@@ -7,6 +7,11 @@ package com.fuckingcheese;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -15,8 +20,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class ElementStorage {
    // private ArrayList<ArrayList<ReactorType>> storage = new ArrayList();
-    private ArrayList<ReactorType> currentReactor = new ArrayList(); 
+    private ArrayList<ReactorType> currentReactor = new ArrayList();
+    private ArrayList<Reactor> units  = new ArrayList();
     private Reader red;
+    private Map<String,ArrayList<Reactor>> companies = new HashMap();
+    private Map<String,ArrayList<Reactor>> countries = new HashMap();
+    private Map<String,ArrayList<Reactor>> regions = new HashMap();
     
     public void goFile(File file)
     {
@@ -40,6 +49,13 @@ public class ElementStorage {
            // String sql = "SELECT DISTINCT type FROM units";// WHERE (date_shutdown > GETDATE() OR date_shutdown IS NULL) AND (construction_start < GETDATE() OR construction_start IS NOT NULL) AND (commercial_operation < GETDATE() AND commercial_operation IS NOT NULL)";
             Statement statement = connection.createStatement();
             convertSQL(statement.executeQuery(sql));
+            
+            String sql4table = "SELECT String_agg(dbo.units.id,';'), companies_name FROM (dbo.units JOIN dbo.sites ON dbo.units.site = dbo.sites.id) JOIN dbo.companies ON dbo.sites.owner_id = dbo.companies.id GROUP BY companies_name";
+            recieveCompanies(statement.executeQuery(sql4table));
+            sql4table = "SELECT String_agg(dbo.units.id,';'), country_name FROM (dbo.units JOIN dbo.sites ON dbo.units.site = dbo.sites.id) JOIN dbo.countries ON dbo.sites.place = dbo.countries.id GROUP BY country_name";
+            recieveCountries(statement.executeQuery(sql4table));
+            sql4table = "SELECT String_agg(dbo.units.id,';'), region_name FROM ((dbo.units JOIN dbo.sites ON dbo.units.site = dbo.sites.id) JOIN dbo.countries ON dbo.sites.place = dbo.countries.id) JOIN dbo.regions ON dbo.countries.region_id = dbo.regions.id GROUP BY region_name";
+            recieveRegions(statement.executeQuery(sql4table));
         } catch (SQLException e) {
             System.out.println("Connection Failed");
             throw new RuntimeException(e);
@@ -48,7 +64,6 @@ public class ElementStorage {
     }
 
     public void convertSQL(ResultSet result) throws SQLException {
-        ArrayList<Reactor> units = new ArrayList<>();
         while(result.next())
         {
             units.add(new Reactor(result.getInt(1),
@@ -79,6 +94,50 @@ public class ElementStorage {
            }*/
            //System.out.println(units);
        }
+    }
+    
+    public void recieveRegions(ResultSet result) throws SQLException    {
+        while(result.next())
+        {
+        regions.put(result.getString(2).trim(), matchReactor(result.getString(1)));
+        }
+        System.out.println(regions);
+    }
+    public void recieveCompanies(ResultSet result) throws SQLException    {
+        
+        while(result.next())
+        {
+        companies.put(result.getString(2).trim(), matchReactor(result.getString(1)));
+        }
+        System.out.println(companies);
+        
+    }
+    public void recieveCountries(ResultSet result)throws SQLException    {
+        while(result.next())
+        {
+        countries.put(result.getString(2).trim(), matchReactor(result.getString(1)));
+        }
+        System.out.println(countries);
+        
+    }
+    
+    public ArrayList<Reactor> matchReactor(String ididi)
+    {
+        ArrayList<Reactor> matchReactor = new ArrayList();
+        String[] nm = ididi.split(";");
+        List<String> ids = Arrays.asList(nm);
+        //System.out.println(ids);
+        for(String blyat : ids)
+        {
+            for(Reactor unit : units)
+            {
+                if(Integer.parseInt(blyat)==unit.getId())
+                {
+                    matchReactor.add(unit);
+                }
+            }
+        }
+        return matchReactor;
     }
 
     public ReactorType MatchReactorType(String name)
@@ -147,5 +206,57 @@ public class ElementStorage {
             }
             return units;
         }
+    
+    public DefaultTableModel fillTable(int a)
+    {         
+        String[][] table = null;
+        switch (a)
+        {
+            case (1):
+                table = makeTbl(companies);
+                break;
+            case (2):
+                table = makeTbl(countries);
+                break;
+            case (3):
+                table = makeTbl(regions);
+                break;
+            default:
+                System.out.println("Ты че ввел?");
+                break;
+        }
+     return new javax.swing.table.DefaultTableModel( table, new String [] {"Чувак", "Ням-ням",}
+        );
+    }
+    
+    public String[][] makeTbl(Map<String,ArrayList<Reactor>> foT)
+    {
+        ArrayList<String[]> table = new ArrayList();
+        for(Map.Entry<String,ArrayList<Reactor>> node : foT.entrySet())
+        {
+            table.add(new String[]{node.getKey(),
+                String.valueOf(calculateFuelSum(node.getValue()))
+            });
+        }
+        String[][] obj = new String[table.size()][2];
+        int i = 0;
+        for(String[] tbl : table)
+        {
+           obj[i][0] = tbl[0];
+           obj[i][1] = tbl[1];
+           i++;
+        }
+        System.out.println(obj[0][0]+" "+obj[0][1]);
+        return obj;
+    }
+    
+    public int calculateFuelSum(ArrayList<Reactor> reactor)
+    {   int sum=0;
+        for(Reactor r : reactor)
+        {
+            sum+=r.getFuel_сonsumption();
+        }
+        return sum;
+    }
     
 }

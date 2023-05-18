@@ -130,6 +130,10 @@ public class Reactor {
         return load_factor;
     }
 
+    public double getFuel_сonsumption() {
+        return fuel_сonsumption;
+    }
+
     @Override
     public String toString() {
         return "Reactor{" +
